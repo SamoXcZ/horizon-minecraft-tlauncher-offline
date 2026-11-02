@@ -8,8 +8,8 @@
 > in progress.
 
 Horizon is an independent Rust re-implementation of Minecraft: Java Edition. This project packages
-everything needed to **run Horizon's Minecraft 26.3 on macOS Intel** — no Microsoft account, offline /
-cracked style — using the Minecraft files a TLauncher install already has.
+everything needed to **run Horizon's Minecraft 26.3 on macOS Intel** — no Microsoft account, offline
+mode — using the Minecraft files a TLauncher install already has.
 
 It is not a launcher. It does not contain or reimplement TLauncher's code, ads, telemetry or auth
 bypass. It only reuses the *Minecraft files*.
@@ -167,19 +167,6 @@ To go from zero to playing on a fresh machine:
 4. Run: `./play.sh`.
 
 Then continue the worldgen/collision fix identified during the source hunt.
-
----
-
-## What a fresh contributor needs (summary)
-
-To get a working setup from scratch:
-
-1. **Horizon** (`nightly-2026-11-01-c9d474d`) + Java 25 runtime — for preparation.
-2. **Prepared Horizon resources** — from step 2 above.
-3. **Minecraft files** — via `fetch-minecraft-26.3.py`.
-4. **`play.sh`** — to launch.
-
-The Python file is only step 3. It's the Minecraft-files fetcher, not the whole setup.
 
 ---
 
