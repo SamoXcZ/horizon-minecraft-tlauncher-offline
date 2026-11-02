@@ -16,13 +16,16 @@ bypass. It only reuses the *Minecraft files*.
 
 ## Legal / disclaimer
 
-- **Horizon** is MIT licensed (upstream project).
-- This snapshot is an independent packaging by its author, not an official Horizon release.
-- It does **not** include, copy or reproduce any TLauncher proprietary code, assets, telemetry or
-  authentication logic. It only consumes publicly distributed Minecraft client/server/library/asset
-  bytes fetched from Mojang's public endpoints, plus an open-source Rust game client.
-- **Minecraft** and the Minecraft name/logo are trademarks of Mojang Synergies AB and Microsoft.
-- Not affiliated with, endorsed by, or connected to Mojang, Microsoft, TLauncher, or any other party.
+- **Horizon** is MIT licensed (upstream project). This snapshot is an independent
+  packaging by its author, not an official Horizon release.
+- This project does **not** include, copy, or reproduce any TLauncher proprietary
+  code, assets, telemetry, or authentication logic.
+- Minecraft game files are fetched exclusively from **Mojang's official public
+  distribution endpoints** — no third-party mirrors, no paywall bypass.
+- **Minecraft** and the Minecraft name/logo are trademarks of Mojang Synergies AB
+  and Microsoft Corporation. This project is not affiliated with, endorsed by, or
+  connected to Mojang, Microsoft, TLauncher, or any other party.
+- Provided as-is, for educational and archival purposes. Use at your own risk.
 
 ## Verified working (this snapshot)
 
