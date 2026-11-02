@@ -23,6 +23,9 @@ bypass. It only reuses the *Minecraft files*.
   bytes fetched from Mojang's public endpoints, plus an open-source Rust game client.
 - **Minecraft** and the Minecraft name/logo are trademarks of Mojang Synergies AB and Microsoft.
 - Not affiliated with, endorsed by, or connected to Mojang, Microsoft, TLauncher, or any other party.
+- - This project does not distribute Minecraft game files. 
+  All game files are downloaded directly from Mojang's 
+  official public CDN at setup time by the user.
 
 ## Verified working (this snapshot)
 
