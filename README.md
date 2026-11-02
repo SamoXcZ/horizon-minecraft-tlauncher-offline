@@ -1,47 +1,108 @@
-# Horizon — Minecraft 26.3 in Rust, run on macOS Intel from TLauncher files
+# Horizon — Minecraft Java Edition 26.3 in Rust, on macOS Intel, offline
 
-> **STATUS: ABANDONED mid-fix.** The game runs, plays, and saves. The last work session
-> tuned performance and mapped the remaining world-gen bug. Not finished.
+> ## Status: **abandoned mid-fix**
+>
+> The game **runs, plays, saves and performs** in this configuration. A verified world-generation
+> defect (trees not spawning / player falling through) was **mapped but not fixed** — see
+> *Known issues*. This repository is a snapshot of the working setup plus the fix attempts that were
+> in progress.
 
-Horizon is an independent Rust re-implementation of Minecraft Java Edition. This project
-packages what was needed to **run it on macOS Intel** with **no Microsoft account** (offline /
-cracked style) using the **Minecraft files TLauncher already has**.
+Horizon is an independent Rust re-implementation of Minecraft: Java Edition. This project packages
+everything needed to **run Horizon's Minecraft 26.3 on macOS Intel** — no Microsoft account, offline /
+cracked style — using the Minecraft files a TLauncher install already has.
 
-## What works (verified)
+It is not a launcher. It does not contain or reimplement TLauncher's code, ads, telemetry or auth
+bypass. It only reuses the *Minecraft files*.
 
-- Horizon nightly `2026-11-01-c9d474d` (x86_64, Metal) runs on an Intel Iris 6000 Mac.
-- Minecraft 26.3 resources prepared from TLauncher-style files (client jar, server jar, 114
-  libraries, ~5,147 assets, sounds, languages).
-- Offline session starts via the game binary directly (no launcher auth gate).
-- **Performance: FIXED during this session** (benchmarked):
-  - Before: avg FPS ~30–55, worst frame ~1 s.
-  - After (graphics preset `performance`, render distance 8, max FPS 60, VSync off): avg FPS
-    **81–116**, worst frame ~75 ms.
+---
 
-## How to run
+## Verified working (this snapshot)
+
+| Item | Value |
+| --- | --- |
+| Game | Horizon Nightly `2026-11-01` · `c9d474d` (Rust, x86_64 Mach-O, Metal) |
+| Minecraft version | **26.3** (the version Horizon pins) |
+| OS / arch | macOS, **x86_64** (Intel) — verified on **macOS 14.8.1** |
+| CPU / GPU | Intel Core i5-5250U @ 1.60 GHz · **Intel(R) Iris(TM) Graphics 6000**, integrated |
+| RAM | **4 GB** (shared with the OS) — laptop form factor |
+| Display | 1366×768 @ 60 Hz |
+
+The client was started directly (`horizon-client`) with prepared resources, bypassing the launcher's
+Microsoft-owner gate entirely. It joins an offline world, generates terrain, renders frames and saves.
+
+### Performance (benchmarked with the built-in `horizon-client --benchmark standard`)
+
+Before tuning:
+
+| Scenario | Avg FPS |
+| --- | --- |
+| Village | 41.9 |
+| Forest | 43.6 |
+| Ocean | 30.5 |
+| Mountain | 54.3 |
+
+Worst frame time before tuning: **~1 s** (ocean phase); 1% low FPS down to ~1–14.
+
+After tuning (graphics preset `performance`, render distance 8, simulation distance 8, max FPS 60,
+VSync off):
+
+| Scenario | Avg FPS |
+| --- | --- |
+| Village | **109.7** |
+| Forest | **81.5** |
+| Ocean | **91.0** |
+| Mountain | **115.7** |
+
+Worst frame time after: **~75 ms**. Frames per second are now healthy for this hardware.
+
+### What was changed to get there
+
+- `horizon-graphics.txt`: `preset:custom` → `preset:performance`
+- `options.txt`: `renderDistance:12 → 8`, `simulationDistance:12 → 8`, `maxFps:120 → 60`,
+  `enableVsync:true → false`
+
+## Hardware / OS requirements to run this
+
+- **macOS on Intel (x86_64)** — verified. Metal backend required (Apple Silicon is a different build;
+  this snapshot is x86_64 only).
+- **Apple GPU with Metal** — verified with Intel Iris integrated graphics.
+- **RAM**: verified with 4 GB (tight). 8 GB+ recommended; 4 GB is the floor it survived.
+- **Disk**: prepared resources ≈ 1.0 GB, Minecraft files ≈ 683 MB, Horizon install ≈ 200 MB.
+- **macOS version**: verified on macOS 14.8.1.
+
+> Devices Horizon did not officially support for this build were made to work here by running the
+> x86_64 binary on an Intel Mac with an integrated Iris GPU and driving it through Metal.
+
+## Quick start
 
 ```sh
-./play.sh                 # Steve, TLauncher folder as game dir, passes args through
+cd /Users/dev/horizon-abandoned
+./play.sh                       # Steve, TLauncher folder as game dir
 ./play.sh --world "New World" --render-distance 8
 ```
 
-Environment:
-- `OXIDE_TLAUNCHER_DIR` — TLauncher's game folder (default `~/Library/Application Support/minecraft`)
-- `HORIZON_NAME` — offline player name (default `Steve`)
-- `HORIZON_GAME_DIR` — where saves live (default: TLauncher folder)
-- `HORIZON_HOME` — Horizon's data folder (default: `./home`)
+Environment knobs: `OXIDE_TLAUNCHER_DIR`, `HORIZON_NAME`, `HORIZON_GAME_DIR`, `HORIZON_HOME`.
 
-## Known unfinished bug
+Minecraft files: `python3 fetch-minecraft-26.3.py <dir> --version-dir <horizon-version-dir>`.
 
-- Trees sometimes don't spawn / spawn weirdly; player can fall through trees/terrain.
-- Source-level hunt performed in `crates/horizon-world` (tree placement, collision, block-state
-  facts). Root cause not fixed. A full rebuild was required to fix it, which was not completed here.
+## Known issues (the unfinished work)
 
-## Finish it
+1. **World generation defects (unfixed, being worked):**
+   - Trees sometimes do not spawn correctly / strangely.
+   - Player can fall through trees / terrain.
+   - Source-level cause mapped to block-state fact handling in `horizon-world` (generator/collision);
+     fix requires a full rebuild, which was not completed in this session.
 
-If you have a beefier machine and ~30+ GB free disk:
+2. **Performance**: fixed via preset tuning; residual frame jitter remained at the margin.
 
-1. Free space, then build the Horizon workspace from source.
-2. Continue the worldgen/collision fix identified in the source hunt.
+3. **Offline only**: no skins, Realms, or authenticated servers.
 
-This is a snapshot in progress — pull requests welcome, bug reports welcome, finishers wanted.
+## For contributors / finishers
+
+- Build the Horizon workspace from source (large; needs substantial disk).
+- Continue the worldgen/collision fix identified during the source hunt.
+
+---
+
+*This is a fan-made, abandoned-in-progress snapshot. Not affiliated with or endorsed by Mojang or
+Microsoft. Minecraft is a trademark of Mojang and Microsoft.*
