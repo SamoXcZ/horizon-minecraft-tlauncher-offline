@@ -113,8 +113,27 @@ Minecraft files: `python3 fetch-minecraft-26.3.py <dir> --version-dir <horizon-v
 
 ## For contributors / finishers
 
-- Build the Horizon workspace from source (large; needs substantial disk).
-- Continue the worldgen/collision fix identified during the source hunt.
+To go from zero to playing on a fresh machine:
+
+1. Install the Horizon launcher and the `nightly-2026-11-01-c9d474d` build (x86_64).
+2. Prepare the resources: `horizon-prepare` with Java 25 (release preparer).
+3. Fetch the Minecraft files: `python3 fetch-minecraft-26.3.py <minecraft-dir> --version-dir <horizon-version-dir>`.
+4. Run: `./play.sh`.
+
+Then continue the worldgen/collision fix identified during the source hunt.
+
+---
+
+## What a fresh contributor needs (summary)
+
+To get a working setup from scratch:
+
+1. **Horizon** (`nightly-2026-11-01-c9d474d`) + Java 25 runtime — for preparation.
+2. **Prepared Horizon resources** — from step 2 above.
+3. **Minecraft files** — via `fetch-minecraft-26.3.py`.
+4. **`play.sh`** — to launch.
+
+The Python file is only step 3. It's the Minecraft-files fetcher, not the whole setup.
 
 ---
 
