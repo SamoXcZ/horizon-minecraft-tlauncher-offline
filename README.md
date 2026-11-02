@@ -14,7 +14,15 @@ cracked style — using the Minecraft files a TLauncher install already has.
 It is not a launcher. It does not contain or reimplement TLauncher's code, ads, telemetry or auth
 bypass. It only reuses the *Minecraft files*.
 
----
+## Legal / disclaimer
+
+- **Horizon** is MIT licensed (upstream project).
+- This snapshot is an independent packaging by its author, not an official Horizon release.
+- It does **not** include, copy or reproduce any TLauncher proprietary code, assets, telemetry or
+  authentication logic. It only consumes publicly distributed Minecraft client/server/library/asset
+  bytes fetched from Mojang's public endpoints, plus an open-source Rust game client.
+- **Minecraft** and the Minecraft name/logo are trademarks of Mojang Synergies AB and Microsoft.
+- Not affiliated with, endorsed by, or connected to Mojang, Microsoft, TLauncher, or any other party.
 
 ## Verified working (this snapshot)
 
@@ -76,8 +84,14 @@ Worst frame time after: **~75 ms**. Frames per second are now healthy for this h
 ## Quick start
 
 ```sh
-cd /Users/dev/horizon-abandoned
 ./play.sh                       # Steve, TLauncher folder as game dir
+./play.sh --world "New World" --render-distance 8
+```
+
+Example — point it at a TLauncher-style folder:
+
+```sh
+export OXIDE_TLAUNCHER_DIR="$HOME/Library/Application Support/minecraft"
 ./play.sh --world "New World" --render-distance 8
 ```
 
@@ -104,5 +118,4 @@ Minecraft files: `python3 fetch-minecraft-26.3.py <dir> --version-dir <horizon-v
 
 ---
 
-*This is a fan-made, abandoned-in-progress snapshot. Not affiliated with or endorsed by Mojang or
-Microsoft. Minecraft is a trademark of Mojang and Microsoft.*
+*This is a fan-made, abandoned-in-progress snapshot. Not affiliated with or endorsed by Mojang, Microsoft.*
