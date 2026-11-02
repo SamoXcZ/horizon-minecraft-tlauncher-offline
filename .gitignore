@@ -1,0 +1,9 @@
+home/
+minecraft-tlauncher/
+game/
+game2/
+game3/
+Horizon.app/
+*.log
+smoke*.json
+benchmarks/
