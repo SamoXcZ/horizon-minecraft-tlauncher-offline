@@ -16,16 +16,13 @@ bypass. It only reuses the *Minecraft files*.
 
 ## Legal / disclaimer
 
-- **Horizon** is MIT licensed (upstream project). This snapshot is an independent
-  packaging by its author, not an official Horizon release.
-- This project does **not** include, copy, or reproduce any TLauncher proprietary
-  code, assets, telemetry, or authentication logic.
-- Minecraft game files are fetched exclusively from **Mojang's official public
-  distribution endpoints** — no third-party mirrors, no paywall bypass.
-- **Minecraft** and the Minecraft name/logo are trademarks of Mojang Synergies AB
-  and Microsoft Corporation. This project is not affiliated with, endorsed by, or
-  connected to Mojang, Microsoft, TLauncher, or any other party.
-- Provided as-is, for educational and archival purposes. Use at your own risk.
+- **Horizon** is MIT licensed (upstream project: [horizon-rust/horizon](https://github.com/horizon-rust/horizon)).
+- This snapshot is an independent packaging by its author, not an official Horizon release.
+- It does **not** include, copy or reproduce any TLauncher proprietary code, assets, telemetry or
+  authentication logic. It only consumes publicly distributed Minecraft client/server/library/asset
+  bytes fetched from Mojang's public endpoints, plus an open-source Rust game client.
+- **Minecraft** and the Minecraft name/logo are trademarks of Mojang Synergies AB and Microsoft.
+- Not affiliated with, endorsed by, or connected to Mojang, Microsoft, TLauncher, or any other party.
 
 ## Verified working (this snapshot)
 
@@ -101,6 +98,52 @@ export OXIDE_TLAUNCHER_DIR="$HOME/Library/Application Support/minecraft"
 Environment knobs: `OXIDE_TLAUNCHER_DIR`, `HORIZON_NAME`, `HORIZON_GAME_DIR`, `HORIZON_HOME`.
 
 Minecraft files: `python3 fetch-minecraft-26.3.py <dir> --version-dir <horizon-version-dir>`.
+
+## What a fresh contributor needs (summary)
+
+To get a working setup from scratch:
+
+1. **Horizon** (`nightly-2026-11-01-c9d474d`) + Java 25 runtime — for preparation.
+2. **Prepared Horizon resources** — from step 2 above.
+3. **Minecraft files** — via `fetch-minecraft-26.3.py`.
+4. **`play.sh`** — to launch.
+
+The Python file is only step 3. It's the Minecraft-files fetcher, not the whole setup.
+
+## How to continue from here — the checklist a new contributor needs
+
+Before touching code, a contributor needs all of:
+
+1. **Upstream Horizon repo**: <https://github.com/horizon-rust/horizon>
+2. **Which Horizon nightly binary**: `nightly-2026-11-01-c9d474d`, obtained via the Horizon launcher
+   release `launcher@0.2.37` (`horizon-launcher-macos-x64.zip`); binaries land in the launcher's
+   versions folder. Direct link:
+   <https://github.com/horizon-rust/horizon/releases/download/launcher%400.2.37/horizon-launcher-macos-x64.zip>
+3. **Rust toolchain**: rustc/cargo **1.99.1** (2026-08-27 / 2026-10-13) — the version used in this session.
+4. **Java version**: **Java 25** (Mojang's `java-runtime-epsilon`) — required by the release preparer
+   (`horizon-prepare`); the game client itself runs in Rust and does not need a JRE at play time.
+5. **`fetch-minecraft-26.3.py`** does: reads the pins from the installed version's
+   `research-lock.json` (manifest sha1, client sha1, server sha1), then pulls the pinned version json,
+   client jar, server jar, asset index, 114 libraries and ~5,147 asset objects from Mojang's public
+   CDN endpoints (piston-meta / piston-data / resources.download.minecraft.net). It verifies sha1s and
+   skips files that are already present.
+6. **Rough disk for a full build**: the Horizon workspace is large; plan on **30+ GB** of free disk for
+   a debug/release build target dir. This session had only ~3.4 GB free and could not build.
+7. **Apple Silicon**: this snapshot is **x86_64 only** — Apple Silicon needs the arm64 build. Untested
+   for the arm64 path in this session.
+8. **What "build from source" requires**: the full Rust workspace (gpui-fast, wgpu, etc.), long compile
+   times, substantial disk; not completed in this session.
+9. **Direct link to the exact commit used**: <https://github.com/horizon-rust/horizon/commit/c9d474d>
+10. **Where the worldgen bug lives** (from the source hunt):
+    - `crates/horizon-world/src/worldgen/generator.rs` — `GenBlockStates::get` (~line 132-134) with
+      the silent `.unwrap_or_default()` fallback.
+    - `crates/horizon-world/src/worldgen/tree_blocks.rs` — `has` (~247-251), `valid_tree_pos` (~259-262).
+    - `crates/horizon-world/src/worldgen/tree.rs` — `TreeFeature::place` (~551-601), `do_place` (~603-653),
+      clipped-tree skip (~630-633), `max_free_tree_height` (~655-678).
+    - Fall-through side: `crates/horizon-world/src/world_movement.rs` — `resolve_world_movement` (~48-95),
+      `no_world_collision` (~106-142, empty-shape gate ~120); `crates/horizon-world/src/block_collision*.rs`;
+      `crates/horizon-world/src/collision.rs` — `CachedCollisionRegistry::cached_shape` (~243-253);
+      client side `crates/horizon-client/src/motion.rs` — `collide` (~2277-2291).
 
 ## Known issues (the unfinished work)
 
